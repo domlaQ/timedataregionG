@@ -8,9 +8,9 @@
         body { font-family: sans-serif; background: #f3f4f6; padding: 20px; text-align: center; }
         .card { background: white; border-radius: 12px; padding: 20px; margin: 10px auto; max-width: 400px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         .m-nomi { color: #059669; font-size: 1.3rem; font-weight: bold; margin-bottom: 15px; display: block; }
-        .vaqt { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; }
+        .vaqt { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee; }
         .vaqt:last-child { border-bottom: none; }
-        #status { font-size: 12px; color: #999; margin-top: 20px; }
+        #status { font-size: 11px; color: #999; margin-top: 15px; }
     </style>
 </head>
 <body>
@@ -19,13 +19,14 @@
     <div id="status"></div>
 
     <script>
-        // DIQQAT: Linkni mana shu ko'rinishda yozing (oxirida ?v=1 bilan)
-        const url = "https://githubusercontent.com";
+        // SIZNING ASOSIY YECHIMINGIZ: 
+        // Hech qanday uzun linklarsiz, shunchaki fayl nomini yozamiz
+        const url = "data.json"; 
 
         async function yuklash() {
             try {
-                // Keshni tozalash uchun tasodifiy son qo'shamiz
-                const javob = await fetch(url + "?v=" + Math.random(), { cache: "no-store" });
+                // Keshdan o'qimasligi uchun ?t= qo'shamiz
+                const javob = await fetch(url + "?t=" + Date.now());
                 if (!javob.ok) throw new Error("Fayl topilmadi");
                 
                 const malumot = await javob.json();
@@ -42,14 +43,12 @@
                 document.getElementById('app').innerHTML = natijaHTML;
                 document.getElementById('status').innerText = "Yangilandi: " + malumot.last_update;
             } catch (xato) {
-                document.getElementById('app').innerHTML = `<p style="color:red">Xatolik yuz berdi. Iltimos, internetni tekshiring va sahifani yangilang.</p>`;
-                console.error(xato);
+                document.getElementById('app').innerHTML = `<p style="color:red">Xatolik: ${xato.message}</p>`;
             }
         }
 
         yuklash();
-        // Har 10 daqiqada avtomat yangilash
-        setInterval(yuklash, 600000);
+        setInterval(yuklash, 60000); 
     </script>
 </body>
 </html>
