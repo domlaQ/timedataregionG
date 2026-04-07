@@ -8,29 +8,29 @@
         :root { --main: #059669; --bg: #f3f4f6; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 15px; }
         .card { background: white; border-radius: 15px; padding: 20px; margin-bottom: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .masjid-nomi { font-size: 1.2rem; font-weight: bold; color: var(--main); }
-        .vaqt-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px; }
+        .masjid-nomi { font-size: 1.2rem; font-weight: bold; color: var(--main); margin-bottom: 10px; display: block; }
+        .vaqt-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
         .vaqt-item { background: #ecfdf5; padding: 8px; border-radius: 8px; text-align: center; }
         .vaqt-nomi { font-size: 0.7rem; color: #065f46; display: block; }
-        .soat { font-weight: bold; }
-        .update-time { text-align: center; font-size: 0.7rem; color: #9ca3af; margin-top: 20px; }
+        .soat { font-weight: bold; font-size: 1rem; }
+        #sync { text-align: center; font-size: 0.75rem; color: #9ca3af; margin-top: 20px; }
     </style>
 </head>
 <body>
 
-<div id="list"></div>
-<div class="update-time" id="sync">Yuklanmoqda...</div>
+<div id="list">Ma'lumot yuklanmoqda...</div>
+<div id="sync"></div>
 
 <script>
-    // GitHub-dagi "Raw" manzilingizni shu yerga qo'ying
     const JSON_URL = "https://raw.githubusercontent.com/domlaQ/timedataregionG/refs/heads/main/data.json"; 
 
     async function loadData() {
         try {
-            // Keshni tozalash uchun URL oxiriga vaqtni qo'shamiz
+            // URL oxiriga vaqtni qo'shish kesh muammosini hal qiladi
             const response = await fetch(JSON_URL + "?t=" + new Date().getTime());
-            const data = await response.json();
+            if (!response.ok) throw new Error('Tarmoq xatosi');
             
+            const data = await response.json();
             const list = document.getElementById('list');
             list.innerHTML = ""; 
 
@@ -40,20 +40,20 @@
                     vHTML += `<div class="vaqt-item"><span class="vaqt-nomi">${v}</span><span class="soat">${m.vaqtlar[v]}</span></div>`;
                 }
                 list.innerHTML += `<div class="card">
-                    <div class="masjid-nomi">${m.nomi}</div>
+                    <span class="masjid-nomi">${m.nomi}</span>
                     <div class="vaqt-grid">${vHTML}</div>
                 </div>`;
             });
 
             document.getElementById('sync').innerText = "Yangilandi: " + data.last_update;
         } catch (e) {
-            document.getElementById('sync').innerText = "Xatolik yuz berdi";
+            console.error(e);
+            document.getElementById('list').innerText = "Xatolik: Ma'lumotni o'qib bo'lmadi. Internetni tekshiring.";
         }
     }
 
     loadData();
-    setInterval(loadData, 60000); // Har daqiqada tekshirish
+    setInterval(loadData, 60000); 
 </script>
 </body>
 </html>
-
