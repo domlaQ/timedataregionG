@@ -5,27 +5,69 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Namoz Vaqtlari</title>
     <style>
-        :root { --primary: #059669; --bg: #f8fafc; --card: #ffffff; --text: #1e293b; }
-        body { font-family: 'Segoe UI', Roboto, sans-serif; background: var(--bg); margin: 0; padding: 15px; color: var(--text); }
-        .container { max-width: 450px; margin: 0 auto; }
-        .header { text-align: center; padding: 20px 0; }
-        .header h1 { font-size: 1.5rem; margin: 0; color: var(--primary); font-weight: 800; }
-        .card { background: var(--card); border-radius: 24px; padding: 24px; margin-bottom: 20px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.03); transition: 0.3s; }
-        .m-nomi { font-size: 1.2rem; font-weight: 700; color: var(--text); margin-bottom: 20px; display: block; border-left: 4px solid var(--primary); padding-left: 12px; }
-        .vaqt-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f1f5f9; }
-        .vaqt-row:last-child { border-bottom: none; }
-        .vaqt-nomi { font-size: 1rem; color: #64748b; font-weight: 500; }
-        .soat { font-size: 1.1rem; font-weight: 700; color: var(--primary); background: #ecfdf5; padding: 4px 12px; border-radius: 10px; }
-        #status { text-align: center; font-size: 0.75rem; color: #94a3b8; margin-top: 20px; text-transform: uppercase; letter-spacing: 1px; }
-        /* Animatsiya */
-        .card { animation: slideUp 0.5s ease-out; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        /* Rasmga mos to'q ranglar va tilla rang uslubi */
+        :root { 
+            --gold: #e2b07e; /* Tilla rang yozuv uchun */
+            --bg: #121212;   /* To'q fon */
+            --card-bg: #1e1e1e; 
+        }
+        body { 
+            font-family: 'Segoe UI', Roboto, sans-serif; 
+            background-color: var(--bg); 
+            background-image: radial-gradient(circle at top, #333 0%, #121212 70%); /* Tepadan tushgan yorug'lik effekti */
+            color: var(--gold); 
+            margin: 0; 
+            padding: 20px; 
+            min-height: 100vh;
+        }
+        .container { max-width: 500px; margin: 0 auto; }
+        .header { text-align: center; padding: 30px 0; border-bottom: 1px solid rgba(226, 176, 126, 0.2); margin-bottom: 20px; }
+        .header h1 { font-size: 1.8rem; margin: 0; letter-spacing: 1px; }
+
+        .card { 
+            padding: 10px 0; 
+            animation: fadeIn 1s ease-in;
+        }
+        .m-nomi { 
+            font-size: 1.4rem; 
+            font-weight: bold; 
+            text-align: center; 
+            margin-bottom: 30px; 
+            display: block;
+            text-shadow: 0 0 10px rgba(226, 176, 126, 0.3);
+        }
+        .vaqt-row { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 15px 10px; 
+            margin-bottom: 10px;
+        }
+        /* Harflar va sonlarni kattalashtirish */
+        .vaqt-nomi { 
+            font-size: 1.6rem; /* Katta harflar */
+            font-weight: 500; 
+        }
+        .soat { 
+            font-size: 1.8rem; /* Katta sonlar */
+            font-weight: 700; 
+        }
+
+        #status { 
+            text-align: center; 
+            font-size: 0.9rem; 
+            color: rgba(226, 176, 126, 0.5); 
+            margin-top: 40px; 
+            border-top: 1px solid rgba(226, 176, 126, 0.1);
+            padding-top: 15px;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header"><h1>Namoz Vaqtlari</h1></div>
-        <div id="app"></div>
+        <div id="app">Yuklanmoqda...</div>
         <div id="status"></div>
     </div>
 
@@ -37,7 +79,8 @@
                 const m = await javob.json();
                 let html = "";
                 m.masjidlar.forEach(masjid => {
-                    let vHTML = `<span class="m-nomi">${masjid.nomi}</span>`;
+                    let vHTML = `<div class="header"><h1>Namoz vaqtlari: ${m.last_update.split(' ')[0]} yil</h1></div>`;
+                    vHTML += `<span class="m-nomi">${masjid.nomi}</span>`;
                     for (let v in masjid.vaqtlar) {
                         vHTML += `<div class="vaqt-row"><span class="vaqt-nomi">${v}</span><span class="soat">${masjid.vaqtlar[v]}</span></div>`;
                     }
