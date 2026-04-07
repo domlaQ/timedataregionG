@@ -5,37 +5,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Namoz Vaqtlari</title>
     <style>
-        body { font-family: sans-serif; background: #f0f2f5; padding: 20px; }
-        .card { background: white; padding: 15px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .vaqt { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid #eee; }
+        body { font-family: sans-serif; background: #f3f4f6; padding: 20px; text-align: center; }
+        .card { background: white; border-radius: 12px; padding: 20px; margin: 10px auto; max-width: 400px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .m-nomi { color: #059669; font-size: 1.3rem; font-weight: bold; margin-bottom: 15px; display: block; }
+        .vaqt { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; }
+        .vaqt:last-child { border-bottom: none; }
+        #status { font-size: 12px; color: #999; margin-top: 20px; }
     </style>
 </head>
 <body>
+
     <div id="app">Yuklanmoqda...</div>
+    <div id="status"></div>
 
     <script>
-        // SIZNING RAW LINKINGIZ:
+        // DIQQAT: Linkni mana shu ko'rinishda yozing (oxirida ?v=1 bilan)
         const url = "https://githubusercontent.com";
 
-        async function start() {
+        async function yuklash() {
             try {
-                // Link oxiriga vaqtni qo'shish keshni chetlab o'tishga yordam beradi
-                const r = await fetch(url + "?t=" + Date.now());
-                if(!r.ok) throw new Error("Fayl topilmadi: " + r.status);
+                // Keshni tozalash uchun tasodifiy son qo'shamiz
+                const javob = await fetch(url + "?v=" + Math.random(), { cache: "no-store" });
+                if (!javob.ok) throw new Error("Fayl topilmadi");
                 
-                const d = await r.json();
-                let html = `<h2>${d.masjidlar[0].nomi}</h2>`;
-                
-                for(let v in d.masjidlar[0].vaqtlar) {
-                    html += `<div class="vaqt"><span>${v}</span><b>${d.masjidlar[0].vaqtlar[v]}</b></div>`;
-                }
-                
-                document.getElementById('app').innerHTML = `<div class="card">${html}</div><p style="text-align:center; font-size:12px; color:gray; margin-top:10px;">Yangilandi: ${d.last_update}</p>`;
-            } catch (err) {
-                document.getElementById('app').innerHTML = "<b style='color:red'>Xato: </b>" + err.message + "<br><small>JSON fayli yoki linkini tekshiring.</small>";
+                const malumot = await javob.json();
+                let natijaHTML = "";
+
+                malumot.masjidlar.forEach(m => {
+                    natijaHTML += `<div class="card"><span class="m-nomi">${m.nomi}</span>`;
+                    for (let v in m.vaqtlar) {
+                        natijaHTML += `<div class="vaqt"><span>${v}</span><b>${m.vaqtlar[v]}</b></div>`;
+                    }
+                    natijaHTML += `</div>`;
+                });
+
+                document.getElementById('app').innerHTML = natijaHTML;
+                document.getElementById('status').innerText = "Yangilandi: " + malumot.last_update;
+            } catch (xato) {
+                document.getElementById('app').innerHTML = `<p style="color:red">Xatolik yuz berdi. Iltimos, internetni tekshiring va sahifani yangilang.</p>`;
+                console.error(xato);
             }
         }
-        start();
+
+        yuklash();
+        // Har 10 daqiqada avtomat yangilash
+        setInterval(yuklash, 600000);
     </script>
 </body>
 </html>
