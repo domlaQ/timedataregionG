@@ -5,69 +5,67 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Namoz Vaqtlari</title>
     <style>
-        /* Rasmga mos to'q ranglar va tilla rang uslubi */
         :root { 
-            --gold: #e2b07e; /* Tilla rang yozuv uchun */
-            --bg: #121212;   /* To'q fon */
-            --card-bg: #1e1e1e; 
+            --gold: #e2b07e; 
+            --bg: #0a0a0a; 
         }
         body { 
-            font-family: 'Segoe UI', Roboto, sans-serif; 
-            background-color: var(--bg); 
-            background-image: radial-gradient(circle at top, #333 0%, #121212 70%); /* Tepadan tushgan yorug'lik effekti */
+            font-family: 'Segoe UI', sans-serif; 
+            background: var(--bg); 
+            background-image: radial-gradient(circle at top, #222 0%, #0a0a0a 60%);
             color: var(--gold); 
             margin: 0; 
-            padding: 20px; 
-            min-height: 100vh;
+            padding: 10px; 
+            display: flex;
+            justify-content: center;
         }
-        .container { max-width: 500px; margin: 0 auto; }
-        .header { text-align: center; padding: 30px 0; border-bottom: 1px solid rgba(226, 176, 126, 0.2); margin-bottom: 20px; }
-        .header h1 { font-size: 1.8rem; margin: 0; letter-spacing: 1px; }
-
-        .card { 
-            padding: 10px 0; 
-            animation: fadeIn 1s ease-in;
-        }
-        .m-nomi { 
-            font-size: 1.4rem; 
-            font-weight: bold; 
+        .container { width: 100%; max-width: 380px; }
+        
+        .header { 
             text-align: center; 
-            margin-bottom: 30px; 
-            display: block;
-            text-shadow: 0 0 10px rgba(226, 176, 126, 0.3);
+            padding: 15px 0 10px 0; 
+            margin-bottom: 5px;
         }
+        .header h1 { font-size: 1.3rem; margin: 0; font-weight: normal; opacity: 0.9; }
+
+        .m-nomi { 
+            font-size: 1.1rem; 
+            text-align: center; 
+            margin-bottom: 15px; 
+            display: block;
+            opacity: 0.8;
+        }
+
+        /* Satrlar orasini yaqinlashtirish */
         .vaqt-row { 
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
-            padding: 15px 10px; 
-            margin-bottom: 10px;
+            padding: 8px 15px; /* Satr ichidagi masofa kamaytirildi */
+            margin-bottom: 2px; /* Satrlar orasidagi masofa minimal qilindi */
         }
-        /* Harflar va sonlarni kattalashtirish */
+
         .vaqt-nomi { 
-            font-size: 1.6rem; /* Katta harflar */
+            font-size: 1.5rem; /* Katta harf */
             font-weight: 500; 
         }
         .soat { 
-            font-size: 1.8rem; /* Katta sonlar */
-            font-weight: 700; 
+            font-size: 1.7rem; /* Katta son */
+            font-weight: bold; 
+            letter-spacing: 1px;
         }
 
         #status { 
             text-align: center; 
-            font-size: 0.9rem; 
-            color: rgba(226, 176, 126, 0.5); 
-            margin-top: 40px; 
-            border-top: 1px solid rgba(226, 176, 126, 0.1);
-            padding-top: 15px;
+            font-size: 0.7rem; 
+            color: rgba(226, 176, 126, 0.4); 
+            margin-top: 25px;
         }
-
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
     <div class="container">
-        <div id="app">Yuklanmoqda...</div>
+        <div id="app"></div>
         <div id="status"></div>
     </div>
 
@@ -79,17 +77,22 @@
                 const m = await javob.json();
                 let html = "";
                 m.masjidlar.forEach(masjid => {
-                    let vHTML = `<div class="header"><h1>Namoz vaqtlari: ${m.last_update.split(' ')[0]} yil</h1></div>`;
-                    vHTML += `<span class="m-nomi">${masjid.nomi}</span>`;
+                    // Sarlavha: Namoz vaqtlari va sana
+                    html += `<div class="header"><h1>Namoz vaqtlari: ${m.last_update.split(' ')[0]}</h1></div>`;
+                    html += `<span class="m-nomi">${masjid.nomi}</span>`;
+                    
                     for (let v in masjid.vaqtlar) {
-                        vHTML += `<div class="vaqt-row"><span class="vaqt-nomi">${v}</span><span class="soat">${masjid.vaqtlar[v]}</span></div>`;
+                        html += `
+                        <div class="vaqt-row">
+                            <span class="vaqt-nomi">${v}</span>
+                            <span class="soat">${masjid.vaqtlar[v]}</span>
+                        </div>`;
                     }
-                    html += `<div class="card">${vHTML}</div>`;
                 });
                 document.getElementById('app').innerHTML = html;
                 document.getElementById('status').innerText = "Yangilandi: " + m.last_update;
             } catch (x) {
-                document.getElementById('app').innerHTML = "<p style='color:red; text-align:center'>Yuklashda xato...</p>";
+                document.getElementById('app').innerHTML = "<p style='text-align:center'>Yuklashda xato...</p>";
             }
         }
         yuklash();
